@@ -1,0 +1,21 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+packages/
+obj/
+bin/
+.vs/
+logs/
+
+# System Files
+.DS_Store
+Thumbs.db
+*.suo
+*.log
+*.user
+node_modules/
+dist/
+.vscode/
+
+*.dbmdl
+*.jfm

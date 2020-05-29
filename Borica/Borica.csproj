@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Description>Client library for eBorica internet payment gateway: https://www.borica.bg/</Description>
+    <Authors>Krastan Petrov</Authors>
+    <Version>1.0.1</Version>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <Copyright>Krastan Petrov - 2020</Copyright>
+    <RepositoryUrl>https://github.com/krstan4o/borica.git</RepositoryUrl>
+    <RepositoryType>GIT</RepositoryType>
+    <PackageTags>Borica, Online Payment Client</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/krstan4o/borica</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PemUtils" Version="3.0.0.82" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\KRASTANP\Desktop\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
