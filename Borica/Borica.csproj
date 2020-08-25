@@ -15,10 +15,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PemUtils" Version="3.0.0.82" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="C:\Users\KRASTANP\Desktop\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
