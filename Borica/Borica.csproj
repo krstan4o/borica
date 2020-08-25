@@ -12,7 +12,7 @@
     <PackageTags>Borica, Online Payment Client</PackageTags>
     <PackageReleaseNotes>First release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/krstan4o/borica</PackageProjectUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
   </PropertyGroup>
 
