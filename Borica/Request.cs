@@ -1,10 +1,12 @@
 ﻿using Borica.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Web;
 
 namespace Borica
 {
@@ -23,7 +25,6 @@ namespace Borica
         private readonly string terminalId;
         private readonly string privateKey;
         private readonly string privateKeyPassword;
-        private readonly bool useFileKeyReader;
         private readonly string language;
         private readonly bool debug;
 
@@ -37,12 +38,11 @@ namespace Borica
         private string currency = "EUR";
 
 
-        public Request(string terminalId, string privateKey, string privateKeyPassword = "", string language = "", bool debug = false, bool useFileKeyReader = true)
+        public Request(string terminalId, string privateKey, string privateKeyPassword, string language = "", bool debug = false)
         {
             this.terminalId = terminalId;
             this.privateKey = privateKey;
             this.privateKeyPassword = privateKeyPassword;
-            this.useFileKeyReader = useFileKeyReader;
             this.language = language.ToUpper();
             this.debug = debug;
         }
@@ -133,13 +133,13 @@ namespace Borica
 
         public string getDate()
         {
-            return DateTime.Now.ToString("YmdHis");
+            return DateTime.Now.ToString("yyyyMMddHHmmss");
         }
 
         public string getAmount()
         {
             validateAmount(amount);
-            return amount.ToString().PadLeft(12, '0');
+            return ((int)amount).ToString().PadLeft(12, '0');
         }
 
         public string getTerminalId()
@@ -249,25 +249,10 @@ namespace Borica
         {
             string msg = signMessage(message);
 
-            var bytes = Encoding.UTF8.GetBytes(msg);
+            var bytes = Encoding.GetEncoding("windows-1251").GetBytes(msg);
             string base64 = Convert.ToBase64String(bytes);
             
-            return getGatewayURL() + type + "?eBorica=" + WebUtility.UrlEncode(base64);
-        }
-
-
-        /**
-         * Read the private key contents and return it.
-         *
-         * @return string
-         */
-        public string getPrivateKey()
-        {
-            if (useFileKeyReader) {
-                return KeyReader.ReadFile(privateKey);
-            }
-
-            return privateKey;
+            return getGatewayURL() + type + "?eBorica=" + HttpUtility.UrlEncode(base64);
         }
 
         /**
@@ -288,12 +273,15 @@ namespace Borica
             else
                 msg = message.ToString();
 
-            RSA pkeyid = KeyReader.ReadKeyFromPem(getPrivateKey(), privateKeyPassword);
+            RSA pkeyid = KeyReader.ReadPrivateKeyFromPKCS12(privateKey, privateKeyPassword);
 
-            byte[] signature = pkeyid.SignData(Encoding.UTF8.GetBytes(msg), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            byte[] signature = pkeyid.SignData(Encoding.GetEncoding("windows-1251").GetBytes(msg), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
             pkeyid.Dispose();
+            
+            string temp = msg + Encoding.GetEncoding("windows-1251").GetString(signature);
+            Debug.WriteLine(temp);
 
-            return msg + Encoding.UTF8.GetString(signature);
+            return temp;
         }
 
         /**

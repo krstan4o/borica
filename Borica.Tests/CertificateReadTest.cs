@@ -1,46 +1,89 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Borica.Tests
 {
     [TestClass]
     public class CertificateReadTest
     {
+        const string DATA = "TEST TEST TEST";
+        const string PFX_PATH = "magazine_enc.p12";
+        const string PFX_PASSWORD = "12345";
+
+        const string PEM_PATH = "magazine.crt";
+
         [TestMethod]
-        public void ReadPrivateRsaPemFile()
+        public void ReadEncPrivateKeyFromPKCS12()
         {
-            string content = ReadFileContents("private-openssl-rsa.pem");
-            RSA rsa = KeyReader.ReadKeyFromPem(content, null, false);
+            RSA rsa = KeyReader.ReadPrivateKeyFromPKCS12(PFX_PATH, PFX_PASSWORD);
             Assert.IsNotNull(rsa);
+            rsa.Dispose();
         }
 
         [TestMethod]
-        public void ReadPrivateEncRsaPemFile()
+        public void ReadPublicKeyFromPKCS12()
         {
-            string content = ReadFileContents("private-openssl-enc-rsa.pem");
-            RSA rsa = KeyReader.ReadKeyFromPem(content, "1234", false);
+            RSA rsa = KeyReader.ReadPublicKey(PFX_PATH, PFX_PASSWORD);
             Assert.IsNotNull(rsa);
+            rsa.Dispose();
         }
 
         [TestMethod]
-        public void ReadPrivatePemFile()
+        public void ReadPublicKeyFromPem()
         {
-            string content = ReadFileContents("private-openssl.pem");
-            RSA rsa = KeyReader.ReadKeyFromPem(content, null, false);
+            RSA rsa = KeyReader.ReadPublicKey(PEM_PATH, null);
             Assert.IsNotNull(rsa);
+            rsa.Dispose();
         }
 
         [TestMethod]
-        public void ReadPrivateEncPemFile()
+        public byte[] SignData() 
         {
-            string content = ReadFileContents("private-openssl-enc.pem");
-            RSA rsa = KeyReader.ReadKeyFromPem(content, "1234", false);
-            Assert.IsNotNull(rsa);
+            RSA pkeyid = KeyReader.ReadPrivateKeyFromPKCS12(PFX_PATH, PFX_PASSWORD);
+
+            byte[] signature = pkeyid.SignData(Encoding.Default.GetBytes(DATA), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            pkeyid.Dispose();
+
+            Assert.IsNotNull(signature);
+            return signature;
         }
 
-        private string ReadFileContents(string path) 
+        [TestMethod]
+        public void VerifyData()
         {
-            return KeyReader.ReadFile(path);
+            RSA cert = KeyReader.ReadPublicKey(PEM_PATH, null);
+
+            byte[] signature = SignData();
+            
+            Assert.IsTrue(cert.VerifyData(Encoding.Default.GetBytes(DATA), signature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1));
+
+            cert.Dispose();
+        }
+
+        [TestMethod]
+        public byte[] EncriptData()
+        {
+            RSA pkeyid = KeyReader.ReadPrivateKeyFromPKCS12(PFX_PATH, PFX_PASSWORD);
+
+            byte[] data = pkeyid.Encrypt(Encoding.Default.GetBytes(DATA), RSAEncryptionPadding.Pkcs1);
+            pkeyid.Dispose();
+
+            Assert.IsNotNull(data);
+            return data;
+        }
+
+        [TestMethod]
+        public void DecriptData()
+        {
+            RSA pkeyid = KeyReader.ReadPrivateKeyFromPKCS12(PFX_PATH, PFX_PASSWORD);
+
+            byte[] data = EncriptData();
+
+            byte[] decripted = pkeyid.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+            pkeyid.Dispose();
+
+            Assert.AreEqual(DATA, Encoding.Default.GetString(decripted));
         }
     }
 }

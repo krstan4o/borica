@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace Borica
 {
@@ -19,20 +20,18 @@ namespace Borica
         const string SIGNATURE_OK = "SIGNATURE_OK";
 
         private readonly string publicCertificate;
-        private readonly bool useFileKeyReader;
 
         private Dictionary<string, object> response;
 
-        public Response(string publicCertificate, bool useFileKeyReader = true)
+        public Response(string publicCertificate)
         {
             this.publicCertificate = publicCertificate;
-            this.useFileKeyReader = useFileKeyReader;
         }
 
         public Response parse(string message)
         {
             byte[] data = Convert.FromBase64String(message);
-            string decodedString = Encoding.UTF8.GetString(data);
+            string decodedString = Encoding.GetEncoding("windows-1251").GetString(data);
             message = decodedString;
 
             response = new Dictionary<string, object>()
@@ -94,7 +93,7 @@ namespace Borica
 
         public bool IsSuccessful()
         {
-            return responseCode() == "00";
+            return responseCode() == "00" && (bool)response[SIGNATURE_OK];
         }
 
         public bool NotSuccessful()
@@ -113,9 +112,8 @@ namespace Borica
         {
             RSA pubkeyid = getCertificate();
 
-            bool verify = pubkeyid.VerifyData(Encoding.UTF8.GetBytes(message.Substring(0, message.Length - 128)), Encoding.UTF8.GetBytes(signature), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            bool verify = pubkeyid.VerifyData(Encoding.GetEncoding("windows-1251").GetBytes(message.Substring(0, message.Length - 128)), Encoding.GetEncoding("windows-1251").GetBytes(signature), HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
 
-            // openssl_free_key(pubkeyid);
             pubkeyid.Dispose();
 
             return verify;
@@ -123,12 +121,7 @@ namespace Borica
 
         public RSA getCertificate()
         {
-            if (useFileKeyReader) {
-                string contents = KeyReader.ReadFile(publicCertificate);
-                return KeyReader.ReadKeyFromPem(contents, null, true);
-            }
-
-            return KeyReader.ReadKeyFromPem(publicCertificate, null, true);
+            return KeyReader.ReadPublicKey(publicCertificate);
         }
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borica", "Borica\Borica.csproj", "{81B7811A-C77B-45BD-B3DF-ECE42D15C6AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borica.Tests", "Borica.Tests\Borica.Tests.csproj", "{B9081C35-837C-43B9-968D-445A0599B16C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Borica.Tests", "Borica.Tests\Borica.Tests.csproj", "{B9081C35-837C-43B9-968D-445A0599B16C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
