@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Client library for eBorica internet payment gateway: https://www.borica.bg/</Description>
     <Authors>Krastan Petrov</Authors>
-    <Version>1.0.1</Version>
+    <Version>1.0.53</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <Copyright>Krastan Petrov - 2020</Copyright>
     <RepositoryUrl>https://github.com/krstan4o/borica.git</RepositoryUrl>
