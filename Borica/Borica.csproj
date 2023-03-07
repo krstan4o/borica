@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <Description>Client library for eBorica internet payment gateway: https://www.borica.bg/</Description>
     <Authors>Krastan Petrov</Authors>
-    <Version>1.0.53</Version>
+    <Version>1.0.54</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <Copyright>Krastan Petrov - 2020</Copyright>
     <RepositoryUrl>https://github.com/krstan4o/borica.git</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>Borica, Online Payment Client</PackageTags>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes>Second release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/krstan4o/borica</PackageProjectUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,10 +25,12 @@
 
   <ItemGroup>
     <None Remove="LICENSE.txt" />
-    <None Include="LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <None Include="../README.md" Pack="true" PackagePath="\" />
+    <None Include="LICENSE.txt" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 </Project>
